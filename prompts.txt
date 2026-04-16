@@ -252,8 +252,19 @@ grep -n "freezeTableName\|UUID\|cretd_ts\|ownr_eid" \
  grep -n "transaction\|Transaction" \
    src/services/acknowledgment/index.ts
 
- grep -n "auth\|permissions\|preHandler" \
-   src/routes/acknowledgment/index.ts
+grep -n "auth\|preHandler" src/routes/acknowledgment/index.ts
 
 grep -n "describe\|it(" \
   src/routes/acknowledgment/index.test.ts
+--- new prompt for modify
+Read src/routes/acknowledgment/index.ts and
+src/routes/calibrationTemplate/index.ts.
+
+The acknowledgment route is missing SSO authentication.
+Looking at calibrationTemplate/index.ts as the reference pattern,
+add the correct auth property to the RouteOptions object in
+src/routes/acknowledgment/index.ts so it follows the same
+SSO pattern as all other authenticated routes.
+
+Do not change anything else in the file.
+After editing, confirm the auth property is present.
