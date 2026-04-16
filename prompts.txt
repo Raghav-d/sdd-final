@@ -239,3 +239,8 @@ Then run:
 If you cannot determine the affected file from architecture.md,
 list the candidates and ask me to choose before proceeding.
 Do not guess. Do not modify any file until I confirm the target.
+
+--
+Read specs/prd.md and specs/architecture.md.
+Then use sdd-generate to create the new acknowledgment feature
+following the patterns observed in architecture.md exactly.
