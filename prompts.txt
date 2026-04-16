@@ -244,3 +244,16 @@ Do not guess. Do not modify any file until I confirm the target.
 Read specs/prd.md and specs/architecture.md.
 Then use sdd-generate to create the new acknowledgment feature
 following the patterns observed in architecture.md exactly.
+
+--Tests
+grep -n "freezeTableName\|UUID\|cretd_ts\|ownr_eid" \
+  src/database/models/chatSession/index.ts
+
+ grep -n "transaction\|Transaction" \
+   src/services/acknowledgment/index.ts
+
+ grep -n "auth\|permissions\|preHandler" \
+   src/routes/acknowledgment/index.ts
+
+grep -n "describe\|it(" \
+  src/routes/acknowledgment/index.test.ts
