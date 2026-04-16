@@ -1,0 +1,241 @@
+You are performing a read-only codebase archaeology session.
+Do not modify any files except creating specs/architecture.md.
+
+Read in this order:
+
+1. package.json — confirm React, Vite, Redux Toolkit, React Query,
+   Omni versions, LightFrame config block
+2. find . -name "*.tsx" -not -path "*/node_modules/*"
+3. find . -name "*.slice.ts" -not -path "*/node_modules/*"
+4. find . -name "*.query.ts" -not -path "*/node_modules/*"
+5. find . -name "*.api.ts" -not -path "*/node_modules/*"
+6. find . -name "*.hooks.ts" -not -path "*/node_modules/*"
+7. src/store/ or wherever Redux store is configured
+
+Also read: ../HORIZON-pme-calibration-api/specs/openapi.yaml
+if accessible, to cross-reference API calls made in the UI.
+
+Produce specs/architecture.md with exactly these sections:
+
+## Stack
+Confirmed versions. LightFrame packageType and registered routes.
+Omni component version in use.
+
+## Component tree
+Every component — name, responsibility in one line,
+what data it reads, what it dispatches or mutates.
+
+## Redux state shape
+Every slice — name, state fields, key actions.
+
+## React Query usage
+Every useQuery/useMutation — key, endpoint called,
+which component owns it.
+
+## API calls
+Table format:
+| Component/Hook | Method | Endpoint | Auth header |
+|----------------|--------|----------|-------------|
+
+## Omni components used
+List every Omni component imported across the codebase.
+Note any non-standard usage or overrides.
+
+## LightFrame config
+packageType, any registered routes or plugins,
+how the container mounts.
+
+## Patterns observed
+Naming conventions, error handling, loading state patterns,
+how SSO token is attached to requests.
+
+## Decisions log
+(Leave empty — append-only, never generated)
+
+When done print: UI archaeology complete
+
+
+find . -name "*.plugin.ts" -not -path "*/node_modules/*"
+find . -name "*.ts" -path "*/routes/*" -not -path "*/node_modules/*"
+
+cd HORIZON-pme-calibration-api
+
+find . -name "*.ts" -not -path "*/node_modules/*" | head -40
+
+grep -r "fastify.register\|app.register\|router.get\|router.post\|addHook\|RouteOptions" src/ --include="*.ts" -l
+
+find . -name "*.ts" -path "*/routes/*" -not -path "*/node_modules/*"
+find . -name "*.ts" -path "*/controllers/*" -not -path "*/node_modules/*"
+find . -name "*.ts" -path "*/models/*" -not -path "*/node_modules/*"
+find . -name "*.ts" -path "*/schemas/*" -not -path "*/node_modules/*"
+
+Read-only codebase archaeology. Create specs/architecture.md and
+specs/openapi.yaml only. Do not modify any other files.
+
+Read in this order:
+
+1. package.json
+2. src/routes/index.ts
+3. cat src/routes/health/index.ts
+4. cat src/routes/peerComparison/index.ts
+5. cat src/routes/liveCalibrationSession/index.ts
+6. cat src/routes/calibrationGroup/index.ts
+7. cat src/routes/calibrationSession/index.ts
+8. cat src/routes/calibrationTemplate/index.ts
+9. cat src/routes/organizationalHealth/index.ts
+10. cat src/routes/leaders/index.ts
+11. cat src/routes/task/index.ts
+12. cat src/routes/workerRatings/index.ts
+13. cat src/routes/v2/calibrationGroup/index.ts
+14. cat src/routes/v2/calibrationTemplate/index.ts
+15. find . -name "*.ts" -path "*/database/models/*" -not -path "*/node_modules/*" -not -name "*.test.ts"
+16. Read each model file found above
+17. find . -name "*.ts" -path "*/services/*" -not -path "*/node_modules/*" -not -name "*.test.ts"
+18. Read each service file found above
+
+Produce specs/architecture.md with exactly these sections:
+
+## Stack
+Confirmed package versions: Fastify, Inversify, Sequelize,
+TypeBox/Zod, Node.js. Note any Capital One specific packages.
+
+## Routes
+| Method | Path | Handler location | Auth required |
+Request schema | Response schema |
+|--------|------|-----------------|---------------|
+|--------|------|-----------------|---------------|
+Include v2 routes separately, note what differs from v1.
+
+## Sequelize models
+Each model: table name, fields + types, associations,
+any hooks defined.
+
+## Service layer
+Each service file: responsibility, methods, what model it touches.
+
+## Validation schemas
+Every TypeBox/Zod schema found — name, shape, which route uses it.
+
+## SSO / Auth pattern
+How authentication is applied — middleware, hooks, decorators.
+Which routes are protected and which are open (e.g. health).
+
+## Error handling pattern
+How errors are caught and returned — shape of error responses.
+
+## Patterns observed
+Naming conventions, folder structure logic, anything
+a developer needs to know before modifying this codebase.
+
+## Decisions log
+(Leave empty — append-only, never generated)
+
+Then produce specs/openapi.yaml derived from the actual route
+handlers and schemas. Reflect what the code does, not assumptions.
+One endpoint per route method found. Include request body schemas,
+response schemas for 200/201, 400, 401, 404, 500.
+
+When done print: API archaeology complete
+
+Read-only codebase archaeology. Create specs/architecture.md only.
+Do not modify any other files.
+
+Read in this order:
+
+1. package.json
+2. find . -name "*.tsx" -path "*/features/*" -not -path "*/node_modules/*" -not -name "*.test.tsx"
+3. Read each component file found above
+4. find . -name "*.slice.ts" -not -path "*/node_modules/*"
+5. Read each slice file found above
+6. find . -name "*.query.ts" -not -path "*/node_modules/*"
+7. find . -name "*.api.ts" -not -path "*/node_modules/*"
+8. find . -name "*.hooks.ts" -not -path "*/node_modules/*"
+9. Read all files found in steps 6-8
+10. find . -name "store.ts" -o -name "store/index.ts" -not -path "*/node_modules/*"
+11. Read store file found above
+12. cat ../HORIZON-pme-calibration-api/specs/openapi.yaml (if accessible)
+
+Produce specs/architecture.md with exactly these sections:
+
+## Stack
+Confirmed versions: React, TypeScript, Vite, Omni version,
+Redux Toolkit, React Query, LightFrame packageType and config.
+Yarn workspaces structure if present.
+
+## Component tree
+Every component found — name, responsibility in one line,
+what data it reads, what it dispatches or mutates.
+Format:
+| Component | Responsibility | Data source | Actions |
+|-----------|---------------|-------------|---------|
+
+## Redux state shape
+Every slice — name, state fields, key actions, async thunks.
+
+## React Query usage
+Every useQuery/useMutation:
+| Hook name | Query key | Endpoint called | Owner component |
+|-----------|-----------|-----------------|-----------------|
+
+## API calls
+Every API call made from the UI:
+| Component/Hook | Method | Endpoint | Auth header attached |
+|----------------|--------|----------|---------------------|
+
+## Omni components used
+Every Omni component imported across the codebase.
+Note any custom overrides or non-standard usage.
+
+## LightFrame config
+packageType, registered routes, how container mounts,
+any plugins registered.
+
+## Patterns observed
+Naming conventions actually used (not what docs say).
+Error handling pattern.
+Loading state pattern.
+How SSO token is attached to API requests.
+Any custom hooks that wrap Omni or Redux.
+
+## Gaps observed
+Anything missing — untested components, inconsistent patterns,
+API calls without error handling, components without loading states.
+
+## Decisions log
+(Leave empty — append-only, never generated)
+
+When done print: UI archaeology complete
+
+
+manually create specs/prd.md
+
+# PRD — [Ticket title]
+**Jira:** [ticket ID]
+
+## Summary
+[Copy ticket description]
+
+## Acceptance Criteria
+- AC-1: [first AC]
+- AC-2: [second AC]
+...
+
+## Affected files
+[Your best guess at which files need changing —
+ archaeology.md will make this more precise]
+
+## Out of scope
+[Anything the ticket explicitly excludes]
+
+# session 3 prompt
+Read these files first before doing anything:
+- specs/prd.md
+- specs/architecture.md
+- specs/openapi.yaml (from API repo if accessible)
+
+Then run:
+/sdd-modify [path to affected component]
+
+If you cannot determine the affected file from architecture.md,
+list the candidates and ask me to choose before proceeding.
+Do not guess. Do not modify any file until I confirm the target.
