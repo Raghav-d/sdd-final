@@ -270,83 +270,269 @@ Do not change anything else in the file.
 After editing, confirm the auth property is present.
 
 --New prompt for architecture.md
-Read-only codebase archaeology. Create specs/architecture.md and
-specs/openapi.yaml only. Do not modify any other files.
+Read-only codebase archaeology. Create or refresh specs/architecture.md
+and specs/openapi.yaml only. Do not modify any other files.
 
-Read in this order:
+STEP 0 — Check if files already exist:
+!`ls specs/architecture.md 2>/dev/null && echo "EXISTS" || echo "NEW"`
 
-1. package.json
+If EXISTS:
+- Read specs/architecture.md first
+- Extract and preserve the ## Decisions log section exactly as-is
+- Note any lines starting with "NOTE:" or "> " — preserve these too
+- Print: "Existing architecture.md found — Decisions log will be preserved"
+- Then proceed to regenerate all other sections from the codebase
 
-2. Discover the full source structure first:
-   find src -maxdepth 3 -type d | sort
+If NEW:
+- Print: "No existing architecture.md found — generating from scratch"
+- Proceed directly to STEP 1
 
-   Examine every folder found. For each folder determine its purpose.
-   If a folder's purpose is unclear, read one file from it before
-   proceeding. Do not skip any folder.
+STEP 1 — Discover full source structure:
+!`find src -maxdepth 3 -type d | sort`
 
-3. src/routes/index.ts
+Examine every folder found. For each folder determine its purpose.
+If a folder's purpose is unclear, read one file from it before
+proceeding. Do not skip any folder.
 
-4. For every folder found under src/routes/ read its index.ts:
-   find src/routes -name "index.ts" -not -name "*.test.ts"
-   Read each file found.
+STEP 2 — Read package.json:
+!`cat package.json`
 
-5. For every folder found under src/database/ read all .ts files:
-   find src/database -name "*.ts" -not -path "*/node_modules/*" -not -name "*.test.ts"
-   Read each file found.
+STEP 3 — Read all route files:
+!`find src/routes -name "index.ts" -not -name "*.test.ts"`
+Read every file returned.
 
-6. For every folder found under src/services/ read all .ts files:
-   find src/services -name "*.ts" -not -path "*/node_modules/*" -not -name "*.test.ts"
-   Read each file found.
+STEP 4 — Read all database files (models, DAOs, migrations):
+!`find src/database -name "*.ts" -not -path "*/node_modules/*" -not -name "*.test.ts"`
+Read every file returned.
 
-7. For every OTHER folder discovered in step 2 that has not yet
-   been read, read its .ts files:
-   find src/<folder> -name "*.ts" -not -path "*/node_modules/*" -not -name "*.test.ts"
-   Read each file found.
-   This ensures no folder is missed regardless of naming convention.
+STEP 5 — Read all service files:
+!`find src/services -name "*.ts" -not -path "*/node_modules/*" -not -name "*.test.ts"`
+Read every file returned.
 
-Produce specs/architecture.md with exactly these sections:
+STEP 6 — Read all remaining folders discovered in STEP 1
+that have not yet been read:
+For each remaining folder run:
+!`find src/<folder> -name "*.ts" -not -path "*/node_modules/*" -not -name "*.test.ts"`
+Read every file returned.
+This ensures no folder is missed regardless of naming convention.
+
+STEP 7 — Read server entry point:
+!`cat src/server.ts 2>/dev/null || cat src/app.ts 2>/dev/null`
+This reveals the DI wiring and how all pieces connect.
+
+Now produce specs/architecture.md with exactly these sections:
+
+---
+
+## Last refreshed
+[Today's date and time]
 
 ## Source tree
-Paste the output of: find src -maxdepth 3 -type d | sort
+[Paste exact output of: find src -maxdepth 3 -type d | sort]
 
 ## Stack
-Confirmed package versions: Fastify, Sequelize, Zod, Node.js.
-Note any Capital One specific packages and their purpose.
+Confirmed package versions from package.json:
+- Runtime, framework, ORM, validation library
+- All Capital One specific packages with their purpose
 
 ## Routes
-| Method | Path | Handler location | Auth required |
-Request schema | Response schema |
-Include v2 routes separately. Note what differs from v1.
+| Method | Path | Handler location | Auth required | Request schema | Response schema |
+|--------|------|-----------------|:---:|---------------|-----------------|
+List all v1 routes first, then v2 routes in a separate table.
+Note what v2 routes differ from v1.
 
 ## Sequelize models
-Each model: table name, fields + types, associations, hooks.
+For each model:
+- Table name (exact, as defined in freezeTableName)
+- All fields: JS name | DB column | Type | Nullable | Default
+- Associations defined
+- Hooks defined
 
 ## DAOs
-Each DAO file found: location, responsibility, methods,
-which model or raw SQL it uses, which service consumes it.
+For each DAO file found:
+- File location
+- Responsibility in one line
+- Methods: name, what it does, which model or raw SQL it uses
+- Which service(s) consume it
 
 ## Service layer
-Each service: responsibility, methods, which DAO it calls.
+For each service:
+- File location
+- Responsibility in one line
+- Methods: name, what it does
+- Which DAO(s) it calls
+- Which other services it depends on
 
 ## Validation schemas
-Every Zod schema: name, shape, which route uses it.
+For each Zod schema found:
+- Name
+- Shape (fields and types)
+- Which route or service uses it
 
 ## SSO / Auth pattern
-How auth is applied. Which routes are protected, which are open.
+- How auth is applied globally (which function, which file)
+- Which routes are open (auth: false)
+- How permissions are checked per route
+- What request.user contains after auth
 
 ## Error handling pattern
-How errors are caught and returned. Shape of error responses.
+- Global error handler location and shape
+- Per-handler try/catch pattern
+- Error classes and their HTTP status codes
+- Error response shape
 
 ## Patterns observed
-Naming conventions, folder structure logic, anything a developer
-needs to know before modifying this codebase.
+Naming conventions actually used in this codebase:
+- Controllers, Services, DAOs, Models, Schemas
+- File and folder naming
+- Import conventions (ESM .js extensions etc)
+- Any patterns a new developer must know before modifying code
 
 ## Decisions log
-(Leave empty — append-only, never generated)
+(Append-only — never overwritten by archaeology runs)
+[If EXISTS: reinsert preserved content here exactly]
+[If NEW: leave empty]
 
-Then produce specs/openapi.yaml derived from actual route handlers
-and schemas. Reflect what the code does, not assumptions.
-One endpoint per route method. Include request body schemas,
-response schemas for 200/201, 400, 401, 404, 500.
+---
 
-When done print: API archaeology complete
+Then produce specs/openapi.yaml:
+- Derived from actual route handlers and Zod schemas
+- One endpoint per route method found
+- Request body schemas matching actual Zod validation
+- Response schemas for 200/201, 400, 401, 404, 500
+- Always regenerated from scratch — no preservation needed
+
+When done print exactly: API archaeology complete
+
+-- UI Prompt
+Read-only codebase archaeology. Create specs/architecture.md only.
+Do not modify any other files. Do not create openapi.yaml —
+that comes from the API repo.
+
+STEP 0 — Check if file already exists:
+!`ls specs/architecture.md 2>/dev/null && echo "EXISTS" || echo "NEW"`
+
+If EXISTS:
+- Read specs/architecture.md first
+- Preserve ## Decisions log exactly as-is
+- Print: "Existing architecture.md found — Decisions log preserved"
+
+If NEW:
+- Print: "No existing architecture.md — generating from scratch"
+
+STEP 1 — Discover full source structure:
+!`find src -maxdepth 3 -type d | sort`
+
+Examine every folder. If a folder's purpose is unclear,
+read one file from it before proceeding. Do not skip any folder.
+
+STEP 2 — Read package.json:
+!`cat package.json`
+
+Also read if present:
+!`cat yarn.lock 2>/dev/null | head -5 || echo "NO_YARN"`
+!`cat vite.config.ts 2>/dev/null || cat vite.config.js 2>/dev/null || echo "NO_VITE"`
+
+STEP 3 — Read LightFrame config:
+!`cat lightframe.config.ts 2>/dev/null || cat lightframe.config.js 2>/dev/null || echo "NO_LIGHTFRAME_CONFIG"`
+
+Read the lightframe packageType from package.json carefully.
+
+STEP 4 — Read all feature/component files:
+!`find src -name "*.tsx" -not -path "*/node_modules/*" -not -name "*.test.tsx" -not -name "*.stories.tsx"`
+Read every file returned.
+
+STEP 5 — Read all state management files:
+!`find src -name "*.slice.ts" -not -path "*/node_modules/*"`
+!`find src -name "*.store.ts" -not -path "*/node_modules/*"`
+!`find src -name "store.ts" -not -path "*/node_modules/*"`
+!`find src -name "store" -type d -not -path "*/node_modules/*"`
+Read every file returned.
+
+STEP 6 — Read all API/query files:
+!`find src -name "*.query.ts" -not -path "*/node_modules/*"`
+!`find src -name "*.api.ts" -not -path "*/node_modules/*"`
+!`find src -name "*.service.ts" -not -path "*/node_modules/*"`
+!`find src -name "*.hooks.ts" -not -path "*/node_modules/*"`
+Read every file returned.
+
+STEP 7 — Read remaining folders from STEP 1 not yet covered:
+For each folder not yet read, run:
+!`find src/<folder> -name "*.ts" -not -path "*/node_modules/*" -not -name "*.test.ts"`
+Read every file returned.
+
+STEP 8 — Cross-reference API contract if accessible:
+!`cat ../HORIZON-pme-calibration-api/specs/openapi.yaml 2>/dev/null | head -100 || echo "NO_API_SPECS"`
+
+If found, note which endpoints the UI currently calls vs what
+the API exposes — flag any gaps.
+
+Now produce specs/architecture.md with exactly these sections:
+
+## Last refreshed
+[Today's date and time]
+
+## Source tree
+[Paste exact output of: find src -maxdepth 3 -type d | sort]
+
+## Stack
+- React version, TypeScript version
+- Vite version and config summary
+- Omni/Gravity design system version
+- Redux Toolkit version (if present)
+- React Query version (if present)
+- LightFrame packageType and version
+- Yarn workspaces structure if present
+- All Capital One specific packages with purpose
+
+## LightFrame config
+- packageType value
+- Registered routes (if any)
+- Plugin registrations
+- How the container mounts into the shell
+
+## Component tree
+| Component | File path | Responsibility | Data source | Actions dispatched |
+|-----------|-----------|---------------|-------------|-------------------|
+One row per component found.
+
+## Redux state shape
+For each slice:
+- Slice name and file path
+- State fields and types
+- Key actions and thunks
+- What component(s) consume it
+
+## React Query usage
+| Hook name | Query key | Endpoint called | Method | Owner component |
+|-----------|-----------|-----------------|--------|-----------------|
+
+## API calls
+Every API call made from the UI:
+| Component/Hook | Method | Endpoint | Auth header attached | Error handled |
+|----------------|--------|----------|---------------------|---------------|
+
+## Omni/Gravity components used
+Every design system component imported across the codebase.
+Note any custom overrides, theme tokens used, or non-standard usage.
+
+## Patterns observed
+- Naming conventions actually used (files, components, hooks, slices)
+- Error handling pattern (how errors surface to the user)
+- Loading state pattern (skeleton, spinner, suspense?)
+- How SSO token is attached to API requests
+- Any custom hooks that wrap Omni or Redux
+- Routing approach (React Router, LightFrame routing, or both)
+
+## Gaps observed
+- Components without error handling
+- API calls without loading states
+- Endpoints in openapi.yaml not called by the UI
+- UI calls to endpoints not in openapi.yaml
+
+## Decisions log
+(Append-only — never overwritten by archaeology runs)
+[If EXISTS: reinsert preserved content here exactly]
+[If NEW: leave empty]
+
+When done print: UI archaeology complete
