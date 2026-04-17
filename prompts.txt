@@ -268,3 +268,85 @@ SSO pattern as all other authenticated routes.
 
 Do not change anything else in the file.
 After editing, confirm the auth property is present.
+
+--New prompt for architecture.md
+Read-only codebase archaeology. Create specs/architecture.md and
+specs/openapi.yaml only. Do not modify any other files.
+
+Read in this order:
+
+1. package.json
+
+2. Discover the full source structure first:
+   find src -maxdepth 3 -type d | sort
+
+   Examine every folder found. For each folder determine its purpose.
+   If a folder's purpose is unclear, read one file from it before
+   proceeding. Do not skip any folder.
+
+3. src/routes/index.ts
+
+4. For every folder found under src/routes/ read its index.ts:
+   find src/routes -name "index.ts" -not -name "*.test.ts"
+   Read each file found.
+
+5. For every folder found under src/database/ read all .ts files:
+   find src/database -name "*.ts" -not -path "*/node_modules/*" -not -name "*.test.ts"
+   Read each file found.
+
+6. For every folder found under src/services/ read all .ts files:
+   find src/services -name "*.ts" -not -path "*/node_modules/*" -not -name "*.test.ts"
+   Read each file found.
+
+7. For every OTHER folder discovered in step 2 that has not yet
+   been read, read its .ts files:
+   find src/<folder> -name "*.ts" -not -path "*/node_modules/*" -not -name "*.test.ts"
+   Read each file found.
+   This ensures no folder is missed regardless of naming convention.
+
+Produce specs/architecture.md with exactly these sections:
+
+## Source tree
+Paste the output of: find src -maxdepth 3 -type d | sort
+
+## Stack
+Confirmed package versions: Fastify, Sequelize, Zod, Node.js.
+Note any Capital One specific packages and their purpose.
+
+## Routes
+| Method | Path | Handler location | Auth required |
+Request schema | Response schema |
+Include v2 routes separately. Note what differs from v1.
+
+## Sequelize models
+Each model: table name, fields + types, associations, hooks.
+
+## DAOs
+Each DAO file found: location, responsibility, methods,
+which model or raw SQL it uses, which service consumes it.
+
+## Service layer
+Each service: responsibility, methods, which DAO it calls.
+
+## Validation schemas
+Every Zod schema: name, shape, which route uses it.
+
+## SSO / Auth pattern
+How auth is applied. Which routes are protected, which are open.
+
+## Error handling pattern
+How errors are caught and returned. Shape of error responses.
+
+## Patterns observed
+Naming conventions, folder structure logic, anything a developer
+needs to know before modifying this codebase.
+
+## Decisions log
+(Leave empty — append-only, never generated)
+
+Then produce specs/openapi.yaml derived from actual route handlers
+and schemas. Reflect what the code does, not assumptions.
+One endpoint per route method. Include request body schemas,
+response schemas for 200/201, 400, 401, 404, 500.
+
+When done print: API archaeology complete

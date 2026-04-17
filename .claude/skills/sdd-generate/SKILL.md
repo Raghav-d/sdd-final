@@ -63,10 +63,61 @@ If the component already exists, stop and say:
 ## Step 3 — Build spec manifest (internal only, do not output in full)
 
 Parse all loaded inputs and produce a mental manifest:
-- Design tokens from figma-export.json if present — skip gracefully if absent
-- Acceptance criteria numbered AC-1, AC-2… from prd.md
-- API endpoints, request/response shapes, error codes from openapi.yaml
-- Component responsibilities from architecture.md
+
+**From prd.md:**
+- Acceptance criteria numbered AC-1, AC-2…
+
+**From openapi.yaml:**
+- API endpoints, request/response shapes, error codes
+
+**From architecture.md:**
+- Component responsibilities
+
+**From figma-export.json (if present):**
+
+The file is a JSON array — one entry per Figma file exported. Each entry has:
+```
+[
+  {
+    "file_key": "ABC123",
+    "node_id": "12:34",              // null = full file export
+    "source_jira_ticket": "PROJ-123",
+    "source_figma_url": "https://...",
+    "file_info": {
+      "name": "...",                 // Figma file name (full-file mode only)
+      "last_modified": "...",
+      "version": "...",
+      "thumbnail_url": "..."
+    },
+    "components": [
+      {
+        "id": "12:34",
+        "name": "Login Screen",      // use as @figma tag value
+        "type": "FRAME",             // FRAME | COMPONENT | COMPONENT_SET | INSTANCE
+        "children_count": 8,         // depth hint for layout complexity
+        "export_url": "https://...", // pre-signed PNG/SVG URL — may be null
+        "export_format": "png"
+      }
+    ]
+  }
+]
+```
+
+Extract from this structure:
+- `components[].name` → use as the `@figma` JSDoc tag value
+- `components[].type` → use to distinguish layout frames (FRAME) from
+  reusable pieces (COMPONENT, COMPONENT_SET, INSTANCE)
+- `components[].children_count` → use as a complexity hint for layout
+  (high count = more sub-sections to scaffold in JSX)
+- `components[].export_url` → reference in a `/* figma-ref: <url> */`
+  comment at the top of the CSS module so the designer can cross-check;
+  skip silently if null
+- Design tokens are NOT included in this export (Figma REST API does not
+  return tokens). Derive spacing, colour, and typography from the PRD
+  and architecture.md instead.
+
+If NO_FIGMA, skip all of the above gracefully and derive visual
+structure entirely from the PRD and architecture.
 
 Print a brief summary (max 10 lines) for the user to review.
 Ask: "Proceed with generation? (yes / adjust)"
@@ -90,10 +141,17 @@ If Figma is absent, derive visual structure from the PRD and architecture.
 - JSDoc tags on every logical block:
   `/** @spec PRD AC-1 */`
   `/** @api POST /endpoint */`
-  `/** @figma ComponentName/Variant */` (only if Figma was provided)
+  `/** @figma {components[N].name} */` (only if Figma was provided;
+  use the matching component name from figma-export.json components array;
+  omit the tag entirely if NO_FIGMA)
 
 ### File 2: src/features/{Name}/{Name}.module.css
-- CSS custom properties for any design tokens (if Figma provided)
+- If Figma was provided, add a reference comment at the top of the file:
+  `/* figma-ref: {components[0].export_url} */`
+  (use the export_url of the primary frame; omit line if export_url is null)
+- Figma REST API does not supply design tokens — do NOT invent token values
+- Derive spacing, colour, and typography from the PRD and architecture.md
+- Use CSS custom properties for any values referenced in more than one rule
 - No magic numbers — use variables or explicit named values
 - One class per major layout section
 
@@ -115,7 +173,10 @@ If Figma is absent, derive visual structure from the PRD and architecture.
 - At least one axe accessibility check
 
 ### File 6: src/features/{Name}/{Name}.stories.tsx
-- One story per Figma variant (or Default/Loading/Error if no Figma)
+- If Figma was provided: one story per entry in figma-export.json
+  `components[]` array where `type` is FRAME or COMPONENT;
+  name each story after `components[N].name`
+- If NO_FIGMA: one story each for Default, Loading, and Error states
 - Args typed against {Name}Props
 - MSW handlers in parameters.msw.handlers
 
