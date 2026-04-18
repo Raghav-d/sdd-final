@@ -558,3 +558,6 @@ export REQUESTS_CA_BUNDLE=~/corporate-ca.pem
 python3 ~/HORIZON-aide-toolkit/skills/figma/export_file.py \
   --url "YOUR_FIGMA_URL" \
   --out specs/figma-export.json
+
+
+python3 -c "import requests; print(requests.get('https://api.figma.com/v1/me', headers={'X-Figma-Token': 'YOUR_PAT'}, verify='$HOME/corporate-ca.pem').status_code)"
