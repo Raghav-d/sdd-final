@@ -541,3 +541,10 @@ When done print: UI archaeology complete
 python3 ~/HORIZON-aide-toolkit/skills/figma/export_file.py \
   --url "https://www.figma.com/design/5wU5CNTExhZBnBQee1P3Tn/..." \
   --out specs/figma-export.json
+
+--cert check
+# Check if there's a corporate CA bundle
+security find-certificate -a -p /Library/Keychains/System.keychain > /tmp/corporate-ca.pem 2>/dev/null && echo "Found" || echo "Not found"
+
+# Check if curl works (uses system certs)
+curl -I https://api.figma.com/v1/me -H "X-Figma-Token: YOUR_PAT"
