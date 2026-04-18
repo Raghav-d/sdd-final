@@ -561,3 +561,9 @@ python3 ~/HORIZON-aide-toolkit/skills/figma/export_file.py \
 
 
 python3 -c "import requests; print(requests.get('https://api.figma.com/v1/me', headers={'X-Figma-Token': 'YOUR_PAT'}, verify='$HOME/corporate-ca.pem').status_code)"
+
+-- prompts
+grep -r "Checkbox\|Button" ui/associate/src --include="*.tsx" -l
+grep -r "from '@cof/omni-react'" ui/associate/src --include="*.tsx" | grep -i "button\|checkbox" | head -10
+
+grep -r "PathAiAssistantModal\|pathAiAssistantModal" ui/associate/src --include="*.tsx"
