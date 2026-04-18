@@ -536,3 +536,8 @@ Note any custom overrides, theme tokens used, or non-standard usage.
 [If NEW: leave empty]
 
 When done print: UI archaeology complete
+
+--figma check
+python3 ~/HORIZON-aide-toolkit/skills/figma/export_file.py \
+  --url "https://www.figma.com/design/5wU5CNTExhZBnBQee1P3Tn/..." \
+  --out specs/figma-export.json
