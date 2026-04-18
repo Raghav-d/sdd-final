@@ -548,3 +548,13 @@ security find-certificate -a -p /Library/Keychains/System.keychain > /tmp/corpor
 
 # Check if curl works (uses system certs)
 curl -I https://api.figma.com/v1/me -H "X-Figma-Token: YOUR_PAT"
+
+security export -t certs -f pemseq \
+  -k /Library/Keychains/System.keychain \
+  -o ~/corporate-ca.pem
+echo "Done: $(wc -l < ~/corporate-ca.pem) lines"
+
+export REQUESTS_CA_BUNDLE=~/corporate-ca.pem
+python3 ~/HORIZON-aide-toolkit/skills/figma/export_file.py \
+  --url "YOUR_FIGMA_URL" \
+  --out specs/figma-export.json
