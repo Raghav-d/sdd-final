@@ -714,3 +714,47 @@ Linked Issues: Link to: HRTP-8050 (API — capture user acknowledgement endpoint
   Q1: competency_kind values: [answer]
   Q2: cycleId source in StrengthDevelopment: [answer]
   Q3: Competency shape: [answer]
+
+  -- Modifications to prd.md
+  ## Resolved NEEDS HUMAN INPUT
+
+  ### competency_kind → fieldNamePrefix
+  There is no competency_kind field. Use fieldNamePrefix: "topStrengths" | "developmentOpportunities"
+
+  ### cycleId source
+  StrengthDevelopment does not have cycleId. Must be passed as prop from
+  CalibrationTemplate → StrengthDevelopment → PathAiAssistantButton → PathAiAssistantModal
+
+  ### localStorage key (corrected)
+  path_ai_ack_{ppl_eid}_{associate_eid}_{competency_code}_{fieldNamePrefix}
+  Note: cycle_id excluded — StrengthDevelopment has no direct cycle access.
+  Decision: pass cycleId as prop if per-cycle show-once is required.
+
+  ### useAiAckPersistedState (new hook)
+  Create new hook at:
+  ui/associate/src/hooks/useAiAckPersistedState/index.ts
+  Purpose: localStorage show-once logic using the corrected key above.
+  usePersistDisabledModalButton is NOT used — it handles double-submit only.
+
+  ### BFF endpoint
+  POST /pme/my-team/api/acknowledge — use MSW mock only for this story.
+  BFF stub route at api/src/routes/acknowledge/index.js returns 201 with
+  { llm_session_id: "mock-session-id" }
+
+
+ -- sdd-modify command sequence
+ -Step 1
+ /sdd-modify ui/associate/src/hooks/useAiAckPersistedState/index.ts
+
+ Prompt before step2-4
+ Before modifying, read:
+ ui/associate/src/hooks/useAiAckPersistedState/index.ts
+ Use this hook for show-once logic — do not reimplement localStorage.
+ Step-2:
+ /sdd-modify ui/associate/src/modals/pathAiAssistantModal/index.tsx
+ Step-3:
+ /sdd-modify ui/associate/src/components/common/pathAiAssistantButton/index.tsx
+ Step-4:
+ /sdd-modify ui/associate/src/components/calibrationTemplate/strengthDevelopment/index.tsx
+ step-5:
+ /sdd-modify api/src/routes/acknowledge/index.js
