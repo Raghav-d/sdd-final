@@ -653,3 +653,28 @@ story is complete
 summary: UI: Implement PathAiAssistantModal acknowledgement flow for Generate Description CTA
 label: UI
 Linked Issues: Link to: HRTP-8050 (API — capture user acknowledgement endpoint)
+
+- AC2 update
+* AC-2: Modal displays the following content matching Figma node 55836-9551:
+
+  Heading: "Generating a description"
+
+  Body paragraph:
+  "After entering your own thoughts about this employee, the assistant will
+  generate a description for the selected competency based on an analysis of
+  feedback, competency scores, and behavioral themes. You'll have the chance
+  to prompt the agent to make updates or edit the text yourself. Once you're
+  happy with the result, you can use it in Lin's calibration profile."
+
+  Confirmation section heading: "Please confirm that you have reviewed all feedback."
+
+  Confirmation body:
+  "To generate a competency description, you must review all individual
+  feedback submissions for this associate. By clicking "I Confirm," you agree
+  and certify that:"
+
+  Bullet points (4 items as shown in Figma)
+
+  Checkbox label: "I Confirm."
+  Primary button label: "Let's go!"
+  Close button: X icon (top right)
