@@ -782,6 +782,27 @@ Linked Issues: Link to: HRTP-8050 (API — capture user acknowledgement endpoint
   - Button variant="primary" from @cof/omni-react (GRV-Web Primary button v1.1)
   - TextHeading, TextBody, Column from @cof/omni-react (already in shell)
 
+  -- Resolved Needs Human Input
+  **Note for sdd-modify**: Throughout this spec, `competency_kind` = `fieldNamePrefix`
+  with values `"topStrengths"` | `"developmentOpportunities"`.
+  The localStorage key is: `path_ai_ack_{ppl_eid}_{associate_eid}_{competency_code}_{fieldNamePrefix}`
+
+  content for FR-001
+
+  - **FR-001a**: Exact modal text content from Figma node 55836-9551:
+    - Heading: "Generating a description"
+    - Body: "After entering your own thoughts about this employee, the assistant
+      will generate a description for the selected competency based on an analysis
+      of feedback, competency scores, and behavioral themes. You'll have the chance
+      to prompt the agent to make updates or edit the text yourself. Once you're
+      happy with the result, you can use it in Lin's calibration profile."
+    - Confirmation heading: "Please confirm that you have reviewed all feedback."
+    - Confirmation body: "To generate a competency description, you must review
+      all individual feedback submissions for this associate. By clicking 'I Confirm,'
+      you agree and certify that:" followed by 4 bullet points (see Figma)
+    - Checkbox label: "I Confirm."
+    - Primary button label: "Let's go!"
+
  -- sdd-modify command sequence
  -Step 1
  /sdd-modify ui/associate/src/hooks/useAiAckPersistedState/index.ts
