@@ -678,3 +678,39 @@ Linked Issues: Link to: HRTP-8050 (API — capture user acknowledgement endpoint
   Checkbox label: "I Confirm."
   Primary button label: "Let's go!"
   Close button: X icon (top right)
+
+  -- Prompt
+  Read these files and report their TypeScript interface definitions only.
+  Do not modify anything.
+
+  1. find ui/associate/src/types -name "*.ts" -not -path "*/node_modules/*"
+     Read every file found.
+
+  2. find ui/associate/src/constants -name "*.ts" -not -path "*/node_modules/*"
+     Read every file found.
+
+  3. cat ui/associate/src/components/calibrationTemplate/strengthDevelopment/index.tsx
+
+  4. cat ui/associate/src/hooks/useGetCompetencies/index.ts
+
+  After reading, answer these specific questions:
+
+  Q1: What is the TypeScript type for competency_kind or fieldNamePrefix?
+      What string values does it accept?
+
+  Q2: In StrengthDevelopment, how is cycleId or cycle_id accessed?
+      Is it a prop, from useFormContext, or from useSelectedCycleContext?
+
+  Q3: In useGetCompetencies, what is the shape of the returned competency object?
+      Does it include a 'kind' or 'type' field?
+
+  Then append the answers as a new section to specs/architecture.md:
+
+  ## Types and constants
+  [TypeScript interfaces found in ui/associate/src/types/]
+  [Constants found in ui/associate/src/constants/]
+
+  ## Answers to open questions
+  Q1: competency_kind values: [answer]
+  Q2: cycleId source in StrengthDevelopment: [answer]
+  Q3: Competency shape: [answer]
