@@ -567,3 +567,89 @@ grep -r "Checkbox\|Button" ui/associate/src --include="*.tsx" -l
 grep -r "from '@cof/omni-react'" ui/associate/src --include="*.tsx" | grep -i "button\|checkbox" | head -10
 
 grep -r "PathAiAssistantModal\|pathAiAssistantModal" ui/associate/src --include="*.tsx"
+
+-- Story modification
+As a people leader, when I click the "Generate Description" CTA on the
+Strength and Development tab of the Calibration Template, I want to see
+an acknowledgement modal on first use so that I understand and confirm
+my intent before the AI assistant activates.
+
+Target component:
+ui/associate/src/modals/pathAiAssistantModal/index.tsx
+
+Related components:
+- ui/associate/src/components/common/pathAiAssistantButton/index.tsx
+  (CTA that triggers modal — needs cycle_id, ppl_eid, associate_eid,
+  competency_code, competency_kind props passed down)
+- ui/associate/src/components/calibrationTemplate/strengthDevelopment/index.tsx
+  (parent that owns modal open state — needs new props wired through)
+
+Existing hooks to use:
+- usePersistedDisabledModalButton — handles localStorage show-once logic.
+  Do not reimplement localStorage persistence.
+
+Figma:
+https://www.figma.com/design/5wU5CNTExhZBnBQeelP3Tn/PM-Experience--HR.xd---MY--26-?node-id=55836-9551
+
+API contract:
+POST /pme/my-team/api/acknowledge
+Request body: { cycle_id, ppl_eid, associate_eid, competency_code, competency_kind }
+Response: { llm_session_id: string }
+Errors: 201 Created | 409 Conflict (already acknowledged) | 500
+Note: endpoint TBD — use MSW mock. Owner: Kishan Ramoliya
+
+Show-once behaviour:
+localStorage key: path_ai_ack_{cycle_id}_{ppl_eid}_{associate_eid}_{competency_code}_{competency_kind}
+Resets: never
+Existing hook handles this: usePersistedDisabledModalButton
+
+Cancel behaviour:
+Closes modal only. No API call made. Modal shows again on next CTA click.
+
+* AC-1: The modal opens when the "Generate Description" CTA is clicked
+  for the first time for a given combination of cycle_id, ppl_eid,
+  associate_eid, competency_code, and competency_kind
+
+* AC-2: The modal displays a header "PATH AI Assistant", confirmation
+  text, a checkbox, a disabled "Let's Go" button, and a Cancel button
+  matching Figma node 55836-9551
+
+* AC-3: The "Let's Go" button remains disabled until the user checks
+  the checkbox
+
+* AC-4: When the checkbox is checked the "Let's Go" button becomes
+  enabled
+
+* AC-5: When Cancel is clicked the modal closes. No API call is made.
+  The modal shows again on the next CTA click for the same key combination
+
+* AC-6: When "Let's Go" is clicked a POST call is made to the
+  acknowledge endpoint. On success (201) the modal closes and the
+  show-once flag is persisted via usePersistedDisabledModalButton
+
+* AC-7: On subsequent clicks of the CTA for the same cycle_id, ppl_eid,
+  associate_eid, competency_code, competency_kind combination the modal
+  does not appear. The Generate Description flow proceeds directly
+
+* AC-8: On API error (500) the modal stays open and displays an inline
+  error message. The user can retry without rechecking the checkbox
+
+* AC-9: The modal uses the Gravity Modal component (grv-web-Modal),
+  Gravity Checkbox (GRV-Web Checkbox v1.0), and Gravity Primary Button
+  (GRV-Web Primary button v1.1) from @cof/omni-react matching the Figma
+  design exactly
+
+* AC-10: All interactive elements have aria-label attributes. The error
+  message uses role="alert". The modal is keyboard navigable.
+
+Tech Note - This is UI-only work. The backend acknowledgement storage
+is handled in a separate story (HRTP-8050)
+Tech Note - calling Gen AI API endpoints is not required for this story
+Tech Note - Acknowledgement modal is only required per direct report,
+per cycle, and should apply to all competencies
+Tech Note - Use MSW mock for the acknowledge endpoint until the backend
+story is complete
+
+summary: UI: Implement PathAiAssistantModal acknowledgement flow for Generate Description CTA
+label: UI
+Linked Issues: Link to: HRTP-8050 (API — capture user acknowledgement endpoint)
