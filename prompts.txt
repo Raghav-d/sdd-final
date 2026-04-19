@@ -742,6 +742,46 @@ Linked Issues: Link to: HRTP-8050 (API — capture user acknowledgement endpoint
   { llm_session_id: "mock-session-id" }
 
 
+-- fix for Prd.md
+* AC-2: Modal displays the following content matching Figma node 55836-9551:
+
+  Heading: "Generating a description"
+
+  Body paragraph: "After entering your own thoughts about this employee,
+  the assistant will generate a description for the selected competency
+  based on an analysis of feedback, competency scores, and behavioral
+  themes. You'll have the chance to prompt the agent to make updates or
+  edit the text yourself. Once you're happy with the result, you can
+  use it in Lin's calibration profile."
+
+  Confirmation heading: "Please confirm that you have reviewed all feedback."
+
+  Confirmation body: "To generate a competency description, you must
+  review all individual feedback submissions for this associate. By
+  clicking "I Confirm," you agree and certify that:"
+
+  Bullet points:
+  - You have read and reviewed every individual feedback submission
+    for this associate;
+  - You will consider all individual feedback and all other relevant
+    information, and not just the competency summaries, in independently
+    making any PM or other employment decisions;
+  - You will not use or consult the competency summaries in making
+    promotion decisions; and
+  - You will review all competency summaries for accuracy and bias
+    before using or considering them in any PM or other employment
+    decision.
+
+  Checkbox label: "I Confirm."
+  Primary button label: "Let's go!"
+  Close button: X icon top right (already implemented in existing shell)
+
+  Gravity/Omni components to use:
+  - Modal, Dialog, DialogHeader from @cof/omni-react (already in shell)
+  - Checkbox from @cof/omni-react (GRV-Web Checkbox v1.0)
+  - Button variant="primary" from @cof/omni-react (GRV-Web Primary button v1.1)
+  - TextHeading, TextBody, Column from @cof/omni-react (already in shell)
+
  -- sdd-modify command sequence
  -Step 1
  /sdd-modify ui/associate/src/hooks/useAiAckPersistedState/index.ts

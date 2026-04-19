@@ -55,7 +55,7 @@ Read the ones related to the target component.
 ```
 
 ```
-!`cat specs/openapi.yaml`
+!`cat specs/openapi.yaml 2>/dev/null || echo "NO_OPENAPI — UI repo, skipping"`
 ```
 
 ## Step 3 — Change impact analysis
