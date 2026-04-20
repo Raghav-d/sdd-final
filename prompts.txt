@@ -819,3 +819,29 @@ Linked Issues: Link to: HRTP-8050 (API — capture user acknowledgement endpoint
  /sdd-modify ui/associate/src/components/calibrationTemplate/strengthDevelopment/index.tsx
  step-5:
  /sdd-modify api/src/routes/acknowledge/index.js
+
+
+
+🚀 *HRTech AIDE Toolkit — AI-Driven Engineering*
+
+We've built a toolkit that turns a Jira ticket into tested, PR-ready code. Validated on real Horizon stories.
+
+*What's wired in:*
+🎫 *Jira* — fetches ticket, strengthens ACs into a spec
+🎨 *Figma* — extracts design tokens and component mappings automatically
+🧠 *Personas* — Claude adopts your stack's engineering standards before writing a line
+📐 *Archaeology* —one-time codebase scan that onboards any new repo. Run once, every future story builds on it.
+📋 *Decisions log* — auto-generated after each story. Team knowledge accumulates, never lost.
+🪟 *Context-aware* — sequential workspace sessions keep large UI monorepos within Claude's context window
+
+*For a developer it's three commands:*
+```
+bash archaeology.sh       # onboard repo once
+bash sprint.sh HRTP-1234  # run every story
+/sdd-decisions            # log what was decided
+```
+
+Works across Horizon PME, L&D, Job Hiring, Joining Portal — any HRTech app on our stack.
+
+Want your repo next? Reach out 👋
+📦 `HRTech-AIDE-Toolkit` (internal) | 👤 Raghavendra Dharmavaram
