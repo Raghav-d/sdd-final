@@ -898,3 +898,45 @@ Want your repo next? Reach out 👋
   Note: CalibrationTemplate drawer may constrain width further —
   if modal renders inside the drawer, illustration may need to
   be hidden at a higher breakpoint. Verify visually after implementation.
+
+  Before modifying pathAiAssistantModal/index.tsx, read these files first:
+  - ui/associate/src/modals/pathAiAssistantModal/index.tsx
+  - specs/prd.md
+
+  Then apply exactly these four fixes — nothing else:
+
+  FIX 1 — Confirmation section background:
+  Wrap the confirmation section (section heading, body text, bullet points,
+  checkbox) in a Column with:
+    style={{ backgroundColor: '#0000000d', borderRadius: '8px', padding: '16px' }}
+  Do not apply background to the full modal — only the confirmation section.
+
+  FIX 2 — Bullet point text (use exact text, do not paraphrase):
+  Replace current bullet points with exactly:
+    • You have read and reviewed every individual feedback submission for this associate;
+    • You will consider all individual feedback and all other relevant information,
+      and not just the competency summaries, in independently making any PM or
+      other employment decisions;
+    • You will not use or consult the competency summaries in making promotion
+      decisions; and
+    • You will review all competency summaries for accuracy and bias before using
+      or considering them in any PM or other employment decision.
+
+  FIX 3 — Let's go! button left-aligned:
+  Change CTA row from justifyContent="flex-end" to justifyContent="flex-start"
+  Remove Cancel button — close is handled by the X icon only.
+  Keep only the Let's go! primary button, left-aligned below the confirmation card.
+
+  FIX 4 — Body paragraph full width:
+  The flex row split (content left, illustration right) must start at the
+  confirmation section level — NOT at the body paragraph level.
+  Structure should be:
+    DialogHeader (full width — heading + close)
+    TextBody paragraph (full width — body text)
+    Flex row:
+      Column flex=1 (confirmation card + CTA)
+      Column (illustration image)
+
+  Do not change any functional logic — checkbox state, mutation call,
+  localStorage, error handling all stay exactly as they are.
+  After writing, run: npx tsc --noEmit 2>&1 | head -20
