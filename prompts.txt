@@ -940,3 +940,62 @@ Want your repo next? Reach out 👋
   Do not change any functional logic — checkbox state, mutation call,
   localStorage, error handling all stay exactly as they are.
   After writing, run: npx tsc --noEmit 2>&1 | head -20
+
+  ---
+  Read ui/associate/src/modals/pathAiAssistantModal/index.tsx first.
+  Do not change any functional logic.
+  Apply exactly these styling fixes:
+
+  FIX 1 — Heading font weight:
+  TextHeading variant="medium" fontWeight="regular"
+  fontSize is correct at 20px via variant="medium"
+  The heading is NOT semibold — use regular weight.
+
+  FIX 2 — Modal background colour:
+  Add backgroundColor '#F7F3EB' to the Dialog via style prop:
+  <Dialog
+    paddingLeftRight="small"
+    width="100%"
+    style={{ backgroundColor: '#F7F3EB' }}
+  >
+  The confirmation card background stays '#0000000d' (unchanged).
+
+  FIX 3 — Let's go! button pill shape:
+  Add style={{ borderRadius: '9999px' }} to the Button component.
+
+  FIX 4 — Flex row layout (Content + Graphic columns):
+  The flex row containing content and illustration must use these
+  exact CSS values from Figma Dev Mode:
+
+  Left column (Content):
+  <div style={{
+    width: '560px',
+    padding: '0 32px 32px 32px',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    gap: '24px'
+  }}>
+    {/* body paragraph, confirmation card, Let's go! button */}
+  </div>
+
+  Right column (Graphic/GR):
+  <div style={{
+    display: 'flex',
+    flex: '1 0 0',
+    alignSelf: 'stretch',
+    flexDirection: 'column',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    paddingTop: '155px'
+  }}>
+    <img src={graphic} alt="" aria-hidden="true"
+      style={{ width: '488px', height: '365px', objectFit: 'contain' }} />
+  </div>
+
+  FIX 5 — Let's go! button not squeezed:
+  Button sits inside the left column with gap="large" (24px) above it
+  from the confirmation card. It is NOT at the bottom of a
+  space-between container. Use gap on the Column, not justify-content.
+
+  After writing run: npx tsc --noEmit 2>&1 | head -20
