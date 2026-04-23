@@ -845,3 +845,56 @@ Works across Horizon PME, L&D, Job Hiring, Joining Portal — any HRTech app on 
 
 Want your repo next? Reach out 👋
 📦 `HRTech-AIDE-Toolkit` (internal) | 👤 Raghavendra Dharmavaram
+
+
+## Visual specification (Figma node 55836-9551 — Dev Mode export)
+
+### Dialog layout
+- Top level: Flex row (content left, illustration right)
+- Left column: flex 1, contains all text + controls
+- Right column: fixed width ~280px, illustration bottom-aligned
+- On smaller viewports: illustration can be hidden (display none < 768px)
+
+### Typography
+- Modal heading "Generating a description":
+  TextHeading variant="medium" fontWeight="semibold" (20px/600)
+- Body paragraph:
+  TextBody variant="medium" (16px/400)
+- Confirmation section heading "Please confirm...":
+  TextBody variant="small" fontWeight="semibold" (14px/600)
+- Bullet point text:
+  TextBody variant="small" (14px/400)
+- Checkbox label "I Confirm.":
+  TextBody variant="small" (14px/400)
+
+### Spacing (Figma → Omni token)
+- Dialog padding: "large" (24px)
+- Gap between heading section and confirmation section: "large" (24px)
+- Gap between bullet points: "small" (8px)
+- Gap between checkbox and button row: "medium" (16px)
+- Header row padding bottom: "medium" (16px)
+
+### Layout
+- CTA row: justifyContent="flex-end", gap="small"
+  Both Cancel and Let's go! are right-aligned together.
+  Order: Cancel first (left), Let's go! second (right)
+
+
+### Elevation
+- Dialog shadow: Elevation Level 3 (drop shadow y=4 radius=16)
+  handled by Omni Dialog elevation prop
+
+### Illustration
+- Type: static PNG asset (not an Omni component)
+- File: ui/associate/src/modals/pathAiAssistantModal/assets/graphic.png
+- Dimensions: 488×520px (Figma native)
+- Rendered size: constrain width to fit modal right column
+- Position: absolute or flex right side of modal, bottom-aligned
+- Import as: import graphic from './assets/graphic.png'
+- Render as: <img src={graphic} alt="" aria-hidden="true" />
+  (decorative — aria-hidden, empty alt)
+- On smaller viewports: illustration hidden below 768px
+  Implementation: CSS media query or inline style
+  Note: CalibrationTemplate drawer may constrain width further —
+  if modal renders inside the drawer, illustration may need to
+  be hidden at a higher breakpoint. Verify visually after implementation.
