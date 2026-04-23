@@ -999,3 +999,53 @@ Want your repo next? Reach out 👋
   space-between container. Use gap on the Column, not justify-content.
 
   After writing run: npx tsc --noEmit 2>&1 | head -20
+
+  --
+  Read ui/associate/src/modals/pathAiAssistantModal/index.tsx first.
+  Do not change any functional logic.
+  Apply exactly these two structural fixes:
+
+  FIX 1 — Body paragraph full width:
+  Move the TextBody paragraph (body text starting "After entering your own
+  thoughts...") OUTSIDE and ABOVE the flex row that contains the content
+  column and illustration column.
+  It must render at full modal width, not constrained to 560px.
+  Add padding: '0 32px' to match the left column padding.
+
+  FIX 2 — Background colours:
+  The Omni Dialog internal background may override style prop.
+  Wrap all Dialog content in a single div:
+    <Dialog paddingLeftRight="zero" width="100%">
+      <div style={{ backgroundColor: '#F7F3EB', width: '100%' }}>
+        <DialogHeader style={{ padding: '32px 32px 0 32px' }}>
+          ...heading + close
+        </DialogHeader>
+        <TextBody style={{ padding: '16px 32px 0 32px' }}>
+          ...body paragraph (full width)
+        </TextBody>
+        <div style={{ display: 'flex' }}>
+          <div style={{ width: '560px', padding: '24px 32px 32px 32px',
+                        display: 'flex', flexDirection: 'column',
+                        alignItems: 'flex-start', gap: '24px' }}>
+            <div style={{ backgroundColor: '#0000000d', borderRadius: '8px',
+                          padding: '16px' }}>
+              ...confirmation card content
+            </div>
+            <Button style={{ borderRadius: '9999px' }}
+                    disabled={!isConfirmed}>
+              Let's go!
+            </Button>
+          </div>
+          <div style={{ flex: '1 0 0', alignSelf: 'stretch',
+                        display: 'flex', flexDirection: 'column',
+                        justifyContent: 'flex-end', alignItems: 'center',
+                        paddingTop: '155px' }}>
+            <img src={graphic} alt="" aria-hidden="true"
+                 style={{ width: '488px', height: '365px',
+                          objectFit: 'contain' }} />
+          </div>
+        </div>
+      </div>
+    </Dialog>
+
+  After writing run: npx tsc --noEmit 2>&1 | head -20
