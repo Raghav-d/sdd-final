@@ -1069,3 +1069,30 @@ resp = requests.get(url, headers=build_headers(), timeout=15, verify=True)
 
 # To:
 resp = requests.get(url, headers=build_headers(), timeout=15, verify=CA_BUNDLE)
+
+
+# Export from ALL keychains
+security export -t certs -f pemseq \
+  -k /Library/Keychains/System.keychain \
+  -o /tmp/system-certs.pem
+
+security export -t certs -f pemseq \
+  -k ~/Library/Keychains/login.keychain-db \
+  -o /tmp/login-certs.pem
+
+# Combine both
+cat /tmp/system-certs.pem /tmp/login-certs.pem > ~/corporate-ca-full.pem
+
+# Update .env to use the combined file
+# REQUESTS_CA_BUNDLE=/Users/your-username/corporate-ca-full.pem
+
+python3 -c "
+import requests, os
+from dotenv import load_dotenv
+load_dotenv()
+ca = os.path.expanduser(os.getenv('REQUESTS_CA_BUNDLE'))
+r = requests.get('https://jira.kdc.capitalone.com', 
+                  headers={'Authorization': 'Bearer ' + os.getenv('JIRA_PAT')},
+                  verify=ca, timeout=10)
+print('Status:', r.status_code)
+"
