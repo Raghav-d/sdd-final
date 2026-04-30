@@ -1096,3 +1096,17 @@ r = requests.get('https://jira.kdc.capitalone.com',
                   verify=ca, timeout=10)
 print('Status:', r.status_code)
 "
+
+## Step 3 — Fetch the ticket
+
+Ensure specs/ directory exists:
+!`mkdir -p specs`
+
+Now run the fetch script using the Bash tool directly with the actual
+issue key extracted from $ARGUMENTS.
+Do NOT use a backtick bash block for this step — use the Bash tool:
+
+  python3 .claude/skills/jira/get_ticket.py [ACTUAL_KEY] --out specs/jira-ticket.json
+
+Replace [ACTUAL_KEY] with the real value from $ARGUMENTS.
+If the script exits non-zero, print the error and stop.
