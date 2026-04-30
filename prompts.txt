@@ -1049,3 +1049,12 @@ Want your repo next? Reach out 👋
     </Dialog>
 
   After writing run: npx tsc --noEmit 2>&1 | head -20
+
+python3 -c "
+import os
+from dotenv import load_dotenv
+from pathlib import Path
+load_dotenv(Path('.env'))
+print('CA_BUNDLE:', os.getenv('REQUESTS_CA_BUNDLE'))
+print('JIRA_PAT set:', bool(os.getenv('JIRA_PAT')))
+"
