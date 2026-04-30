@@ -1110,3 +1110,89 @@ Do NOT use a backtick bash block for this step — use the Bash tool:
 
 Replace [ACTUAL_KEY] with the real value from $ARGUMENTS.
 If the script exits non-zero, print the error and stop.
+
+
+# ── Install permissions ───────────────────────────────────────────────────────
+if [ ! -f "$REPO_DIR/.claude/settings.json" ]; then
+  cat > "$REPO_DIR/.claude/settings.json" << 'SETTINGS'
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3 *)",
+      "Bash(curl *)",
+      "Bash(mkdir *)",
+      "Bash(cat *)",
+      "Bash(ls *)",
+      "Bash(find *)",
+      "Bash(git *)",
+      "Bash(npm *)",
+      "Bash(npx *)",
+      "Bash(cp *)",
+      "Bash(touch *)",
+      "Bash(rm *)",
+      "Bash(echo *)",
+      "Bash(grep *)",
+      "Bash(sed *)",
+      "Bash(chmod *)"
+    ],
+    "deny": []
+  }
+}
+SETTINGS
+  echo "  ✓ .claude/settings.json created (bash permissions)"
+fi
+
+# Add to HRTech-AIDE-Toolkit/templates/
+cat > ~/HRTech-AIDE-Toolkit/templates/settings.json << 'EOF'
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3 *)",
+      "Bash(curl *)",
+      "Bash(mkdir *)",
+      "Bash(cat *)",
+      "Bash(ls *)",
+      "Bash(find *)",
+      "Bash(git *)",
+      "Bash(npm *)",
+      "Bash(npx *)",
+      "Bash(cp *)",
+      "Bash(touch *)",
+      "Bash(rm *)",
+      "Bash(echo *)",
+      "Bash(grep *)",
+      "Bash(sed *)",
+      "Bash(chmod *)"
+    ],
+    "deny": []
+  }
+}
+EOF
+
+manual step for now -- 
+mkdir -p .claude
+cat > .claude/settings.json << 'EOF'
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3 *)",
+      "Bash(curl *)",
+      "Bash(mkdir *)",
+      "Bash(cat *)",
+      "Bash(ls *)",
+      "Bash(find *)",
+      "Bash(git *)",
+      "Bash(npm *)",
+      "Bash(npx *)",
+      "Bash(cp *)",
+      "Bash(touch *)",
+      "Bash(rm *)",
+      "Bash(echo *)",
+      "Bash(grep *)",
+      "Bash(sed *)",
+      "Bash(chmod *)"
+    ],
+    "deny": []
+  }
+}
+EOF
