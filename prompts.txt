@@ -1058,3 +1058,14 @@ load_dotenv(Path('.env'))
 print('CA_BUNDLE:', os.getenv('REQUESTS_CA_BUNDLE'))
 print('JIRA_PAT set:', bool(os.getenv('JIRA_PAT')))
 "
+# After load_dotenv line, add:
+CA_BUNDLE = os.getenv("REQUESTS_CA_BUNDLE", True)
+# Expand ~ if present
+if isinstance(CA_BUNDLE, str):
+    CA_BUNDLE = os.path.expanduser(CA_BUNDLE)
+
+# Then in fetch_ticket, change:
+resp = requests.get(url, headers=build_headers(), timeout=15, verify=True)
+
+# To:
+resp = requests.get(url, headers=build_headers(), timeout=15, verify=CA_BUNDLE)
