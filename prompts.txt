@@ -1196,3 +1196,43 @@ cat > .claude/settings.json << 'EOF'
   }
 }
 EOF
+
+## Step 1 — Check environment
+
+Verify required environment variables are available using Python:
+
+!`python3 -c "
+import os
+from pathlib import Path
+try:
+from dotenv import load_dotenv
+load_dotenv(Path('.env'))
+except Exception:
+pass
+pat = os.getenv('JIRA_PAT', '')
+base_url = os.getenv('JIRA_BASE_URL', '')
+if not pat:
+print('JIRA_PAT_MISSING')
+elif not base_url:
+print('JIRA_BASE_URL_MISSING')
+else:
+print('ENV_OK')
+print('BASE_URL:' + base_url)
+"`
+If JIRA_PAT_MISSING, stop and print:
+"JIRA_PAT not found in environment.
+Export before starting aide:
+  export JIRA_PAT=your-token
+  export JIRA_BASE_URL=https://jira.kdc.capitalone.com
+Then restart aide."
+
+If JIRA_BASE_URL_MISSING, stop and print:
+"JIRA_BASE_URL not found.
+Export: export JIRA_BASE_URL=https://jira.kdc.capitalone.com"
+
+get_ticket.py -  find - load_dotenv(Path(__file__).resolve().parents[2] / ".env")
+replace with below
+try:
+    load_dotenv(Path(__file__).resolve().parents[2] / ".env")
+except Exception:
+    pass
