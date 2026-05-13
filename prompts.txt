@@ -1236,3 +1236,19 @@ try:
     load_dotenv(Path(__file__).resolve().parents[2] / ".env")
 except Exception:
     pass
+
+
+
+This scorecard is a good idea — however it actually depends on the engineering excellence model to work properly. The X axis says 'Health' but doesn't define it. Our engineering excellence model is exactly what defines and measures health consistently across all 250 applications. Without it, two people score the same app differently and the quadrants become subjective. Let's use both: the engineering excellence model generates the health score, and the scorecard visualises the portfolio outcomes for leadership."
+
+Problem 1 — It answers a different question entirely.
+The scorecard answers: "What should we do with each application at a portfolio level?" — invest, maintain, retire, or consolidate. That is a portfolio strategy conversation.
+The Engineering and Operational Excellence model answers: "For the applications we are keeping, how do we operate and engineer them well?" That is an engineering execution conversation.
+These are sequential, not competing. You need the rationalization scorecard first to know which applications are worth investing in — and then the engineering excellence model to define how to operate them. Choosing one over the other is like choosing between a map and a set of driving instructions. You need both.
+Problem 2 — "Health" on the X axis is doing enormous hidden work.
+Look at the scorecard carefully. The X axis says "Health" — but health is undefined. What does health mean? Is it ASPIRE compliance? DORA performance? Incident frequency? Uptime? Security posture?
+Without a rigorous definition of health, the scorecard produces opinions, not measurements. Two people scoring the same application will place it in different quadrants. The Engineering and Operational Excellence model — with its DORA metrics, maturity postures, and ASPIRE requirement IDs — is actually what defines and measures health in a defensible, consistent way.
+In other words: the engineering excellence model is what makes the scorecard credible. Without it, the X axis is subjective.
+Problem 3 — It doesn't solve PeopleTech's stated problem.
+PeopleTech's problem statement is specific: 45% engineering capacity consumed by toil, 64% customer-detected incidents, 285-hour recovery spikes. None of those problems get solved by categorising applications into quadrants. A "Sustain / Optimize" label on Workday does not reduce MTTR. A "Modernize / Replatform" label on a custom app does not give teams an auto-rollback capability.
+The scorecard tells you what to do at a strategic level. The engineering excellence model tells you how to do it at an execution level. Replacing one with the other leaves PeopleTech with a strategy but no execution plan — which is arguably where they already are.
